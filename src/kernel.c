@@ -1,5 +1,5 @@
-#include "vga.h"
-
+#include "neuix_vga.h"
+#include "neuix_userland"
 // 엔트리 포인트 (부트로더가 호출하는 함수)
 void kernel_main(void) {
     vga_init();  // 화면 초기화
