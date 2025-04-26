@@ -1,8 +1,8 @@
 #ifndef NEUIX_USERLAND_H
 #define NEUIX_USERLAND_H
 
-#include "vga.h"
-#include "keyboard.h"
+#include "neuix_vga.h"
+#include "neuix_keyboard.h"
 #include "io.h"
 #include <stdbool.h>
 #include <stdint.h>
