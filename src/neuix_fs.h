@@ -53,6 +53,31 @@ static const char* type_to_str(FileType t) {
     return "file";
 }
 
+// 바이너리 실행용 타입
+typedef void (*binary_entry_t)(void);
+
+// 바이너리 파일 실행 함수
+typedef void (*binary_entry_t)(void);
+static void run_binary(const uint8_t* bin, uint32_t size) {
+    uint8_t* target = (uint8_t*)0x100000;
+    for (uint32_t i = 0; i < size; i++) {
+        target[i] = bin[i];
+    }
+
+    extern volatile bool esc_pressed;
+    esc_pressed = false;
+
+    __asm__ volatile ("sti");
+
+    binary_entry_t entry = (binary_entry_t)target;
+    entry();
+
+    __asm__ volatile ("cli");
+
+    vga_set_color(COLOR_LIGHT_GREEN, COLOR_BLACK);
+    vga_write("\n[Exited binary program]\n");
+}
+
 // 파일 시스템 초기화
 static void fs_init() {
     for (int i = 0; i < FS_MAX_DISK_SECTORS; i++) {
