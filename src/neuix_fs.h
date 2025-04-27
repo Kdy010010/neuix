@@ -208,5 +208,52 @@ static void fs_create(const char* path, FileType type, const uint8_t* data, uint
     fs_root = node;
     fs_save();
 }
+// 파일/폴더 삭제
+static bool fs_delete(const char* path) {
+    FileNode* prev = NULL;
+    FileNode* node = fs_root;
+    while (node) {
+        if (streq(node->path, path)) {
+            if (prev) {
+                prev->next = node->next;
+            } else {
+                fs_root = node->next;
+            }
+            if (node->content) free(node->content);
+            free(node);
+            fs_save();
+            return true;
+        }
+        prev = node;
+        node = node->next;
+    }
+    return false;
+}
 
+// 파일/폴더 이름 변경 (move)
+static bool fs_move(const char* old_path, const char* new_path) {
+    FileNode* node = fs_root;
+    while (node) {
+        if (streq(node->path, old_path)) {
+            strcpy(node->path, new_path);
+            fs_save();
+            return true;
+        }
+        node = node->next;
+    }
+    return false;
+}
+
+// 파일 복제
+static bool fs_copy(const char* src_path, const char* dest_path) {
+    FileNode* node = fs_root;
+    while (node) {
+        if (streq(node->path, src_path)) {
+            fs_create(dest_path, node->type, node->content, node->size);
+            return true;
+        }
+        node = node->next;
+    }
+    return false;
+}
 #endif // NEUIX_FS_H
