@@ -165,14 +165,31 @@ static void fs_save() {
     }
 }
 
-// 파일 리스트 출력
 static void fs_list() {
     FileNode* node = fs_root;
     while (node) {
         vga_write(node->path);
-        vga_write(" : ");
+        vga_write(" [");
         vga_write(type_to_str(node->type));
-        vga_write("\n");
+        vga_write("] ");
+
+        // 파일 크기 표시
+        char sizebuf[16];
+        int si = 0;
+        uint32_t temp = node->size;
+        char rev[16];
+        int ri = 0;
+        if (temp == 0) rev[ri++] = '0';
+        while (temp) {
+            rev[ri++] = '0' + (temp % 10);
+            temp /= 10;
+        }
+        for (int i = ri-1; i >= 0; i--) sizebuf[si++] = rev[i];
+        sizebuf[si] = 0;
+
+        vga_write(sizebuf);
+        vga_write(" bytes\n");
+
         node = node->next;
     }
 }
