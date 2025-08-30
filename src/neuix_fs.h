@@ -126,7 +126,7 @@ static void fs_init() {
     }
 }
 
-// 파일 시스템 저장
+// 파일 시스템 저장 관련
 static void fs_save() {
     uint8_t* p = fs_disk_cache;
     FileNode* node = fs_root;
